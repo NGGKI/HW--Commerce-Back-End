@@ -4,16 +4,48 @@ const { Product, Category, Tag, ProductTag } = require('../models/')
 // The `/api/products` endpoint
 
 // get all products
-router.get('/products', (req, res) => {
+router.get('/products', async (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
+  try {
+    let products = await Product.findAll({ include: [{ model: Category }, { model: Tag }] }
+    )
+    res.json(products)
+  } catch (err) {
+    res.status(500).json({ message: 'Something went wrong, please try again.', error: err })
+  }
 })
 
 // get one product
-router.get('/products/:id', (req, res) => {
+router.get('/products/:id', async ({ body, params: { id } }, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  try {
+    let product = await Product.findOne({ where: { id }, include: [{ model: Category }, { model: Tag }] }
+    )
+    res.json(product)
+  } catch (err) {
+    res.status(500).json({ message: 'Something went wrong, please try again.', error: err })
+  }
 })
+
+router.delete('/products/:id', async ({ body, params: { id } }, res) => {
+  // delete one product by its `id` value
+  try {
+    let product = await Product.findOne({ where: { id } })
+
+    if (!product) {
+      res.status(404).json({ message: 'No product with this id.' })
+      return
+    }
+    await Product.destroy({ where: { id } })
+    res.status(200).json({ message: "Product deleted!" })
+  } catch (err) {
+    res.status(500).json({ message: 'Something went wrong, please try again.', error: err })
+  }
+})
+
+
 
 // create new product
 router.post('/products', (req, res) => {
@@ -46,6 +78,8 @@ router.post('/products', (req, res) => {
       res.status(400).json(err)
     })
 })
+
+
 
 // update product
 router.put('/products/:id', (req, res) => {
@@ -89,8 +123,5 @@ router.put('/products/:id', (req, res) => {
     })
 })
 
-router.delete('/products/:id', (req, res) => {
-  // delete one product by its `id` value
-})
 
 module.exports = router
