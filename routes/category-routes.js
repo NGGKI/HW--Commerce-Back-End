@@ -43,7 +43,7 @@ router.put('/categories/:id', async ({ body, params: { id } }, res) => {
   // update a category by its `id` value
   try {
     let category = await Category.findOne({ where: { id } })
-    
+
     if (!category) {
       res.status(404).json({ message: 'No user with this id.' })
       return
@@ -59,7 +59,7 @@ router.delete('/categories/:id', async ({ body, params: { id } }, res) => {
   // delete a category by its `id` value
   try {
     let category = await Category.findOne({ where: { id } })
-   
+
     if (!category) {
       res.status(404).json({ message: 'No user with this id.' })
       return

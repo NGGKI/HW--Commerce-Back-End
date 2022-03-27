@@ -1,0 +1,5 @@
+//please replace your username and password for workbench
+
+Pleas enter your username and password below that associated with workbench
+
+LOCAL_URL=mysql://`username`:`password`$@localhost:3306/ecommerce_db
